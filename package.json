@@ -1,0 +1,16 @@
+{
+  "name": "plat_web",
+  "version": "1.0.0",
+  "description": "aplicación web interactiva similar a un sistema de pruebas académicas en WSL (Windows Subsystem for Linux). La aplicación debe permitir a los usuarios realizar evaluaciones en diferentes áreas de conocimiento (matemáticas, ciencias naturales, ciencias sociales, análisis de imagen y comprensión de textos). El sistema debe incluir:",
+  "main": "plate_server.js",
+  "scripts": {
+    "start": "node plate_server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "type": "module"
+}

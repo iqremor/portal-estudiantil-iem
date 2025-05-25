@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama de Bohr</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            font-family: sans-serif;
+            flex-direction: column;
+            padding-top: 20px; /* Add some space at the top */
+        }
+        h1 {
+            font-size: 2.5em; /* Large font size */
+            margin-bottom: 20px; /* Space below the title */
+            color: #333; /* Dark grey color */
+            text-align: center; /* Center the text */
+        }
+        .container {
+            display: flex; /* Use flexbox for layout */
+            align-items: flex-start; /* Align items to the top */
+            gap: 30px; /* Space between elements */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            justify-content: center; /* Center content when wrapped */
+        }
+        #atomCanvas { /* Specific style for the atom canvas */
+            background-color: #000000; /* Atom canvas is now black */
+            border: 1px solid #ccc;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .panel {
+            background-color: #ffffff; /* Panel background remains white */
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            min-width: 250px; /* Minimum width for side panels */
+            box-sizing: border-box; /* Include padding and border in element's total width */
+        }
+         .energy-diagram-container {
+             /* Inherits .panel styles */
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+         }
+         #energyDiagramCanvas {
+             background-color: #000000; /* Energy diagram canvas is black */
+         }
+
+        .highlight {
+            background-color: #ffffcc; /* Light yellow highlight */
+            font-weight: bold;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px; /* Space above controls */
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #info {
+            margin-top: 20px;
+            font-size: 1.1em;
+            text-align: center;
+            min-height: 3em; /* Reserve space */
+        }
+        #spectrumImage {
+            display: block; /* Make image a block element */
+            margin-top: 30px; /* Space above the image */
+            margin-left: auto; /* Auto margins for centering */
+            margin-right: auto;
+            max-width: 100%; /* Ensure image is responsive */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Diagrama de Bohr</h1>
+
+    <div class="container">
+        <canvas id="atomCanvas"></canvas>
+
+        <div class="panel energy-diagram-container">
+            <h2>Diagrama de Energía</h2>
+            <canvas id="energyDiagramCanvas"></canvas>
+        </div>
+    </div>
+
+    <img id="spectrumImage" src="image_bbb5ad.png" alt="Espectro Visible">
+
+    <div class="controls">
+        <button id="startButton">Suministrar Energía</button>
+        <button id="resetButton">Retirar Energía</button>
+    </div>
+    <div id="info"></div>
+
+    <script>
+        const atomCanvas = document.getElementById('atomCanvas');
+        const atomCtx = atomCanvas.getContext('2d');
+        const energyDiagramCanvas = document.getElementById('energyDiagramCanvas');
+        const energyDiagramCtx = energyDiagramCanvas.getContext('2d');
+
+        const startButton = document.getElementById('startButton');
+        const resetButton = document.getElementById('resetButton');
+        const infoDiv = document.getElementById('info');
+
+        // Set canvas sizes - Increased size for atomCanvas
+        atomCanvas.width = 700;
+        atomCanvas.height = 500;
+        energyDiagramCanvas.width = 250; // Keep energy diagram size the same
+        energyDiagramCanvas.height = 350;
+
+        // Atom properties
+        // Recalculate nucleus position based on new canvas size
+        const nucleus = { x: atomCanvas.width / 2, y: atomCanvas.height / 2, radius: 15 };
+        // Assign arbitrary energy values to levels for demonstration (in arbitrary units)
+        // Added more levels up to 7
+        const energyLevels = [
+            { radius: 40, energy: -10 }, // n=1
+            { radius: 65, energy: -7 },  // n=2
+            { radius: 90, energy: -5 },  // n=3
+            { radius: 115, energy: -3.5 },// n=4
+            { radius: 140, energy: -2.5 },// n=5
+            { radius: 165, energy: -1.8 },// n=6
+            { radius: 190, energy: -1.2 } // n=7
+        ];
+        // Adjust initial electron position based on new nucleus position and first orbit radius
+        let electron = {
+            x: nucleus.x + energyLevels[0].radius,
+            y: nucleus.y,
+            radius: 8,
+            orbitIndex: 0,
+            angle: 0,
+            isEmittingColor: false, // New property to indicate if electron should show emission color
+            emissionColor: '#ffffff' // Default emission color (will be updated)
+        };
+
+        // Animation states
+        const STATE_IDLE = 0;
+        const STATE_ABSORBING = 1; // Photon moving towards electron
+        const STATE_EXCITED = 2; // Electron in a stable orbit (n > 1)
+        const STATE_EMITTING = 3; // Electron jumped down, photons emitting
+        const STATE_QUANTUM_LEAP_UP = 4; // Short state for the jump up visual
+        const STATE_QUANTUM_LEAP_DOWN = 5; // Short state for the jump down visual
+
+
+        let animationState = STATE_IDLE;
+
+        // Photon properties
+        let incomingPhotons = [];
+        let emittedPhotons = [];
+        const photonSpeed = 3; // This is less relevant now that movement is time-based
+        const incomingPhotonCount = 1;
+        const emittedPhotonCount = 1; // Changed from 20 to 1
+        // Color and wavelength will be determined by energy difference during emission
+        let emittedPhotonColor = '#FF00FF'; // Default, will be updated
+        let emittedPhotonWavelength = ''; // Will be updated
+        let emittedEnergyDifference = 0; // Will be updated
+
+        // Animation parameters
+        let absorptionProgress = 0; // 0 to 1
+        let emissionProgress = 0; // 0 to 1
+        const absorptionDuration = 300; // frames for absorption animation (approx 5 seconds at 60fps)
+        const emissionDuration = 300; // frames for emission animation (approx 5 seconds at 60fps)
+        const quantumLeapDuration = 10; // Very short duration for the visual jump
+
+
+        // Energy Diagram properties
+        const energyDiagram = {
+            x: 30, // X position of the energy axis
+            y: energyDiagramCanvas.height - 30, // Y position of the lowest energy level
+            height: energyDiagramCanvas.height - 60, // Height of the energy axis
+            levelSpacing: (energyDiagramCanvas.height - 60) / (energyLevels.length - 1), // Vertical space between levels
+            lineLength: 80, // Length of the horizontal energy level lines
+            labelOffset: 10 // Offset for text labels
+        };
+
+        // Function to highlight the electron's current level in the energy diagram
+        function highlightCurrentLevel() {
+            // Highlight in the energy diagram
+            drawEnergyDiagram(); // Redraw the diagram
+            const currentLevelY = energyDiagram.y - (electron.orbitIndex * energyDiagram.levelSpacing);
+            energyDiagramCtx.strokeStyle = '#00ffff'; // Highlight color (cyan for visibility on black)
+            energyDiagramCtx.lineWidth = 3; // Thicker line for highlight
+            energyDiagramCtx.beginPath();
+            energyDiagramCtx.moveTo(energyDiagram.x, currentLevelY);
+            energyDiagramCtx.lineTo(energyDiagram.x + energyDiagram.lineLength, currentLevelY);
+            energyDiagramCtx.stroke();
+        }
+
+
+        // Initialize incoming photons targeting the electron's CURRENT position
+        function initializeIncomingPhotons() {
+            incomingPhotons = [];
+            const targetRadius = energyLevels[electron.orbitIndex].radius; // Target current electron position
+            const targetAngle = electron.angle;
+            // Target position is relative to the nucleus, which is now centered in the larger canvas
+            const targetX = nucleus.x + targetRadius * Math.cos(targetAngle);
+            const targetY = nucleus.y + targetRadius * Math.sin(targetAngle);
+
+
+            for (let i = 0; i < incomingPhotonCount; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                // Start position should be further out relative to the larger canvas
+                const distance = Math.max(atomCanvas.width, atomCanvas.height) / 2 + Math.random() * 50;
+                const startX = nucleus.x + distance * Math.cos(angle);
+                const startY = nucleus.y + distance * Math.sin(angle);
+                incomingPhotons.push({
+                    startX: startX, // Store initial X
+                    startY: startY, // Store initial Y
+                    x: startX, // Current X
+                    y: startY, // Current Y
+                    targetX: targetX,
+                    targetY: targetY,
+                    wavePhase: Math.random() * Math.PI * 2 // Random starting phase for the wave
+                });
+            }
+        }
+
+         // Initialize emitted photons from the electron's CURRENT position
+        function initializeEmittedPhotons() {
+             emittedPhotons = [];
+             const startX = electron.x; // Emit from current electron position
+             const startY = electron.y;
+
+             for (let i = 0; i < emittedPhotonCount; i++) { // Loop runs only once now
+                 const angle = Math.random() * Math.PI * 2;
+                 emittedPhotons.push({
+                     startX: startX, // Store initial X
+                     startY: startY, // Store initial Y
+                     x: startX, // Current X
+                     y: startY, // Current Y
+                     // Calculate a target position far away based on a random angle and larger canvas size
+                     targetX: startX + Math.cos(angle) * Math.max(atomCanvas.width, atomCanvas.height),
+                     targetY: startY + Math.sin(angle) * Math.max(atomCanvas.width, atomCanvas.height),
+                     vx: photonSpeed * Math.cos(angle), // Keep vx/vy for drawing wave direction
+                     vy: photonSpeed * Math.sin(angle),
+                     wavePhase: Math.random() * Math.PI * 2 // Random starting phase for the wave
+                 });
+             }
+        }
+
+
+        // Draw the atom
+        function drawAtom() {
+            // Draw energy levels and labels
+            atomCtx.strokeStyle = '#cccccc'; // Light grey orbits on black background
+            atomCtx.lineWidth = 1;
+            atomCtx.font = '14px Arial'; // Set font for labels
+            atomCtx.fillStyle = '#ffffff'; // White labels on black background
+            atomCtx.textAlign = 'center'; // Align text to center
+            atomCtx.textBaseline = 'bottom'; // Align text to the bottom of the calculated point
+
+            energyLevels.forEach((level, index) => {
+                // Draw the orbit circle
+                atomCtx.beginPath();
+                atomCtx.arc(nucleus.x, nucleus.y, level.radius, 0, Math.PI * 2);
+                atomCtx.stroke();
+
+                // Draw the energy level label (n=...)
+                const labelText = `n=${index + 1}`;
+                // Calculate position slightly above the orbit (near 12 o'clock)
+                const labelAngle = -Math.PI / 2; // 12 o'clock position
+                const labelDistance = level.radius + 5; // Distance from nucleus to text position (closer)
+                const textX = nucleus.x + labelDistance * Math.cos(labelAngle);
+                const textY = nucleus.y + labelDistance * Math.sin(labelAngle);
+
+                atomCtx.fillText(labelText, textX, textY);
+            });
+
+            // Draw nucleus
+            atomCtx.fillStyle = '#E53935'; // Red (visible on black)
+            atomCtx.beginPath();
+            atomCtx.arc(nucleus.x, nucleus.y, nucleus.radius, 0, Math.PI * 2);
+            atomCtx.fill();
+
+            // Draw electron
+            // Use emission color if isEmittingColor is true, otherwise use default white
+            atomCtx.fillStyle = electron.isEmittingColor ? electron.emissionColor : '#ffffff'; // Changed default color to white
+            atomCtx.beginPath();
+            atomCtx.arc(electron.x, electron.y, electron.radius, 0, Math.PI * 2);
+            atomCtx.fill();
+        }
+
+        // Draw photons (modified to draw particle and wave path)
+        function drawPhotons(photons, color, isIncoming = false) {
+            atomCtx.fillStyle = color;
+            atomCtx.strokeStyle = color;
+            atomCtx.lineWidth = 1.5; // Thicker line for the wave
+
+            photons.forEach(photon => {
+                // Draw the particle (circle)
+                atomCtx.beginPath();
+                atomCtx.arc(photon.x, photon.y, 4, 0, Math.PI * 2);
+                atomCtx.fill();
+
+                // Draw the wave path
+                const waveLength = 30; // Length of one wave cycle
+                const waveAmplitude = 8; // Height of the wave
+                let startX, startY, endX, endY, angle, distance, waveProgressOffset;
+
+                if (isIncoming) {
+                     startX = photon.x;
+                     startY = photon.y;
+                     endX = photon.targetX;
+                     endY = photon.targetY;
+                     dx = endX - startX;
+                     dy = endY - startY;
+                     distance = Math.sqrt(dx * dx + dy * dy);
+                     angle = Math.atan2(dy, dx); // Angle from photon to target
+                     waveProgressOffset = absorptionProgress * 0.1; // Use absorptionProgress for wave movement
+                } else { // Emitted photon
+                     startX = photon.x;
+                     startY = photon.y;
+                     endX = photon.targetX; // Use the calculated target for emitted photons
+                     endY = photon.targetY;
+                     dx = endX - startX;
+                     dy = endY - startY;
+                     distance = Math.sqrt(dx * dx + dy * dy);
+                     angle = Math.atan2(dy, dx); // Angle based on movement towards target
+                     waveProgressOffset = emissionProgress * 0.1; // Use emissionProgress for wave movement
+                }
+
+                const waveSegments = Math.max(2, Math.floor(distance / 5)); // Number of segments based on distance
+
+                atomCtx.beginPath();
+                atomCtx.moveTo(startX, startY);
+
+                for (let i = 0; i < waveSegments; i++) {
+                    const segmentProgress = (i + 1) / waveSegments;
+                    const segmentDistance = distance * segmentProgress;
+
+                    // Position along the line from start to end
+                    const posX = startX + Math.cos(angle) * segmentDistance;
+                    const posY = startY + Math.sin(angle) * segmentDistance;
+
+                    // Displacement perpendicular to the line for the wave
+                    const perpendicularAngle = angle + Math.PI / 2; // Perpendicular direction
+                    // Adjust the phase based on distance and overall animation progress for movement effect
+                    const waveDisplacement = Math.sin((segmentDistance / waveLength) * Math.PI * 2 + waveProgressOffset) * waveAmplitude;
+
+                    const waveX = posX + Math.cos(perpendicularAngle) * waveDisplacement;
+                    const waveY = posY + Math.sin(perpendicularAngle) * waveDisplacement;
+
+                    atomCtx.lineTo(waveX, waveY);
+                }
+                atomCtx.stroke();
+            });
+        }
+
+        // Function to draw the energy level diagram
+        function drawEnergyDiagram() {
+            // Clear canvas
+            energyDiagramCtx.clearRect(0, 0, energyDiagramCanvas.width, energyDiagramCanvas.height);
+
+            // Draw energy axis
+            energyDiagramCtx.strokeStyle = '#ffffff'; // White axis on black background
+            energyDiagramCtx.lineWidth = 2;
+            energyDiagramCtx.beginPath();
+            energyDiagramCtx.moveTo(energyDiagram.x, energyDiagram.y);
+            energyDiagramCtx.lineTo(energyDiagram.x, energyDiagram.y - energyDiagram.height);
+            energyDiagramCtx.stroke();
+
+            // Draw arrow for energy axis
+            energyDiagramCtx.beginPath();
+            energyDiagramCtx.moveTo(energyDiagram.x, energyDiagram.y - energyDiagram.height);
+            energyDiagramCtx.lineTo(energyDiagram.x - 5, energyDiagram.y - energyDiagram.height + 10);
+            energyDiagramCtx.moveTo(energyDiagram.x, energyDiagram.y - energyDiagram.height);
+            energyDiagramCtx.lineTo(energyDiagram.x + 5, energyDiagram.y - energyDiagram.height + 10);
+            energyDiagramCtx.stroke();
+
+            // Draw energy level lines and labels
+            energyDiagramCtx.font = '12px Arial';
+            energyDiagramCtx.fillStyle = '#ffffff'; // White text on black background
+            energyDiagramCtx.textAlign = 'left';
+            energyDiagramCtx.textBaseline = 'middle';
+
+            energyLevels.forEach((level, index) => {
+                const levelY = energyDiagram.y - (index * energyDiagram.levelSpacing);
+
+                // Draw energy level line
+                energyDiagramCtx.strokeStyle = '#cccccc'; // Light grey lines on black background
+                energyDiagramCtx.lineWidth = 1;
+                energyDiagramCtx.beginPath();
+                energyDiagramCtx.moveTo(energyDiagram.x, levelY);
+                energyDiagramCtx.lineTo(energyDiagram.x + energyDiagram.lineLength, levelY);
+                energyDiagramCtx.stroke();
+
+                // Draw energy value label (removed "unidades")
+                const energyLabel = `${level.energy.toFixed(2)}`; // Display only the number
+                energyDiagramCtx.fillText(energyLabel, energyDiagram.x + energyDiagram.lineLength + energyDiagram.labelOffset, levelY);
+
+                // Draw level number label (n=...)
+                const levelNumberLabel = `n=${index + 1}`;
+                 energyDiagramCtx.fillText(levelNumberLabel, energyDiagram.x - energyDiagram.labelOffset - 20, levelY); // Position to the left
+            });
+
+             // Add label for the energy axis
+             energyDiagramCtx.font = '16px Arial';
+             energyDiagramCtx.textAlign = 'center';
+             energyDiagramCtx.fillText('Energía', energyDiagram.x, energyDiagram.y - energyDiagram.height - 10);
+        }
+
+
+        // Function to determine color and wavelength based on energy difference
+        function getColorAndWavelength(energyDiff) {
+            // This is a simplified mapping for demonstration
+            // In reality, this is based on Planck's equation E = hc/λ
+            // Higher energy difference means shorter wavelength (bluer light)
+            // Lower energy difference means longer wavelength (redder light)
+
+            if (energyDiff > 8) { // Adjusted ranges for 7 levels
+                 return { color: '#4A148C', wavelength: 'aprox < 400 nm (Ultravioleta/Violeta)' };
+            } else if (energyDiff > 6) {
+                 return { color: '#283593', wavelength: 'aprox 400-450 nm (Violeta/Azul)' };
+            } else if (energyDiff > 4) {
+                 return { color: '#0277BD', wavelength: 'aprox 450-490 nm (Azul/Cian)' };
+            } else if (energyDiff > 2) {
+                 return { color: '#4CAF50', wavelength: 'aprox 490-570 nm (Cian/Verde)' };
+            } else if (energyDiff > 1) {
+                 return { color: '#FFC107', wavelength: 'aprox 570-590 nm (Amarillo)' };
+            } else if (energyDiff > 0.5) {
+                 return { color: '#FF9800', wavelength: 'aprox 590-620 nm (Naranja)' };
+            } else {
+                 return { color: '#E53935', wavelength: 'aprox > 620 nm (Rojo/Infrarrojo)' };
+            }
+        }
+
+        // Update animation state
+        function update() {
+            // Clear atom canvas
+            atomCtx.clearRect(0, 0, atomCanvas.width, atomCanvas.height);
+
+            // Draw atom
+            drawAtom();
+
+            // Update based on state
+            if (animationState === STATE_ABSORBING) {
+                infoDiv.textContent = 'Absorbiendo energía (fotón entrante)...';
+                // Move incoming photons based on absorption progress
+                incomingPhotons.forEach(photon => {
+                    const t = absorptionProgress / absorptionDuration; // Interpolation factor (0 to 1)
+                    // Linear interpolation between start and target position
+                    photon.x = photon.startX + (photon.targetX - photon.startX) * t;
+                    photon.y = photon.startY + (photon.targetY - photon.startY) * t;
+                });
+                drawPhotons(incomingPhotons, '#FFEB3B', true); // Yellow for incoming energy, draw as particle+wave
+
+                absorptionProgress++;
+                if (absorptionProgress >= absorptionDuration) {
+                    // Photon has reached the electron, trigger quantum leap up
+                    animationState = STATE_QUANTUM_LEAP_UP;
+                    absorptionProgress = 0; // Reset for next absorption
+                    incomingPhotons = []; // Clear incoming photons
+                    // Electron orbit index will be updated in the next state
+                }
+
+            } else if (animationState === STATE_QUANTUM_LEAP_UP) {
+                 infoDiv.textContent = '¡Salto cuántico hacia arriba!';
+                 // Instantly update electron position to the new orbit
+                 electron.orbitIndex++; // Move to the next level
+                 const currentOrbit = energyLevels[electron.orbitIndex];
+                 electron.x = nucleus.x + currentOrbit.radius * Math.cos(electron.angle);
+                 electron.y = nucleus.y + currentOrbit.radius * Math.sin(electron.angle);
+
+                 highlightCurrentLevel(); // Highlight the new level in the diagram
+
+                 // Transition immediately to Excited state (or Idle if somehow already at max)
+                 animationState = STATE_EXCITED; // Assume excited after jump up
+                 // No progress needed for instant jump
+            }
+
+            else if (animationState === STATE_EXCITED || animationState === STATE_IDLE) {
+                 // Electron orbits in its current level
+                 electron.angle += (animationState === STATE_IDLE ? 0.01 : 0.02); // Slower orbit in ground state
+                 const currentOrbit = energyLevels[electron.orbitIndex];
+                 electron.x = nucleus.x + currentOrbit.radius * Math.cos(electron.angle);
+                 electron.y = nucleus.y + currentOrbit.radius * Math.sin(electron.angle);
+
+            } else if (animationState === STATE_EMITTING) {
+                infoDiv.textContent = `Emitiendo energía: ${emittedEnergyDifference.toFixed(2)} unidades. Color: ${emittedPhotonWavelength}.`;
+                 // Move emitted photons away based on emission progress
+                 emittedPhotons.forEach(photon => {
+                     const t = emissionProgress / emissionDuration; // Interpolation factor (0 to 1)
+                     // Linear interpolation from start position outwards
+                     photon.x = photon.startX + (photon.targetX - photon.startX) * t;
+                     photon.y = photon.startY + (photon.targetY - photon.startY) * t;
+                 });
+                 drawPhotons(emittedPhotons, emittedPhotonColor, false); // Emitted photons are particles + waves
+
+                 emissionProgress++;
+                 if (emissionProgress >= emissionDuration) {
+                     // Emission animation finished
+                     emittedPhotons = []; // Clear emitted photons
+                     // Electron is already in the lower orbit from STATE_QUANTUM_LEAP_DOWN
+                     animationState = (electron.orbitIndex === 0) ? STATE_IDLE : STATE_EXCITED; // Back to idle if n=1
+                     emissionProgress = 0; // Reset for next emission
+                     infoDiv.textContent = `Electrón regresó a n=${electron.orbitIndex + 1}. ${animationState === STATE_IDLE ? 'Listo para absorber energía.' : 'En estado excitado.'}`;
+                     highlightCurrentLevel(); // Highlight the new level in the diagram
+                     electron.isEmittingColor = false; // Reset electron color after emission
+                 }
+
+            } else if (animationState === STATE_QUANTUM_LEAP_DOWN) {
+                 infoDiv.textContent = '¡Salto cuántico hacia abajo!';
+                 // Instantly update electron position to the new lower orbit
+                 const previousOrbitIndex = electron.orbitIndex;
+                 electron.orbitIndex--; // Move to the previous level
+
+                 // Calculate energy difference for emission *before* updating orbitIndex for display
+                 const energyDiff = energyLevels[previousOrbitIndex].energy - energyLevels[electron.orbitIndex].energy;
+                 emittedEnergyDifference = energyDiff;
+
+                 // Determine color and wavelength based on energy difference
+                 const { color, wavelength } = getColorAndWavelength(energyDiff);
+                 emittedPhotonColor = color;
+                 emittedPhotonWavelength = wavelength;
+
+                 // Set electron color to emitted color
+                 electron.isEmittingColor = true;
+                 electron.emissionColor = emittedPhotonColor;
+
+
+                 const currentOrbit = energyLevels[electron.orbitIndex];
+                 electron.x = nucleus.x + currentOrbit.radius * Math.cos(electron.angle);
+                 electron.y = nucleus.y + currentOrbit.radius * Math.sin(electron.angle);
+
+                 highlightCurrentLevel(); // Highlight the new lower level in the diagram
+
+                 // Initialize emitted photons from the new lower orbit position
+                 initializeEmittedPhotons(); // Emits from the electron's current (new) position
+
+                 // Transition immediately to Emitting state
+                 animationState = STATE_EMITTING;
+                 // No progress needed for instant jump
+            }
+
+
+            // Update button states based on current orbit and animation state
+            const isAnimating = animationState === STATE_ABSORBING || animationState === STATE_EMITTING || animationState === STATE_QUANTUM_LEAP_UP || animationState === STATE_QUANTUM_LEAP_DOWN;
+            startButton.disabled = electron.orbitIndex >= energyLevels.length - 1 || isAnimating;
+            resetButton.disabled = electron.orbitIndex <= 0 || isAnimating;
+
+
+            requestAnimationFrame(update);
+        }
+
+        // Suministrar Energía button
+        startButton.addEventListener('click', () => {
+            // Only allow action if not already at max level and not currently animating
+            const isAnimating = animationState !== STATE_IDLE && animationState !== STATE_EXCITED;
+            if (electron.orbitIndex < energyLevels.length - 1 && !isAnimating) {
+                // Initialize photons targeting the electron's *current* position
+                initializeIncomingPhotons();
+                animationState = STATE_ABSORBING; // Start absorption animation
+                absorptionProgress = 0; // Reset progress
+            }
+        });
+
+        // Retirar Energía button
+        resetButton.addEventListener('click', () => {
+            // Only allow action if not already at min level and not currently animating
+             const isAnimating = animationState !== STATE_IDLE && animationState !== STATE_EXCITED;
+            if (electron.orbitIndex > 0 && !isAnimating) {
+                // Trigger quantum leap down immediately
+                animationState = STATE_QUANTUM_LEAP_DOWN;
+                emissionProgress = 0; // Reset progress for emission animation that follows
+            }
+        });
+
+
+        // Function to emit photons (called when electron drops an energy level)
+        // This function is now called from STATE_QUANTUM_LEAP_DOWN
+        function emitPhotons(count, color) {
+            emittedPhotons = [];
+            // Emit from the electron's current position (which is already the new lower orbit)
+            const startX = electron.x;
+            const startY = electron.y;
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                emittedPhotons.push({
+                     startX: startX, // Store initial X
+                     startY: startY, // Store initial Y
+                     x: startX, // Current X
+                     y: startY, // Current Y
+                     // Calculate a target position far away based on a random angle
+                     targetX: startX + Math.cos(angle) * Math.max(atomCanvas.width, atomCanvas.height),
+                     targetY: startY + Math.sin(angle) * Math.max(atomCanvas.width, atomCanvas.height),
+                     vx: photonSpeed * Math.cos(angle), // Keep vx/vy for drawing wave direction
+                     vy: photonSpeed * Math.sin(angle),
+                     wavePhase: Math.random() * Math.PI * 2 // Random starting phase for the wave
+                });
+            }
+        }
+
+        // Initial setup
+        drawEnergyDiagram(); // Draw the initial energy diagram
+        highlightCurrentLevel(); // Highlight the initial level
+
+        // Start animation loop
+        update();
+
+    </script>
+
+</body>
+</html>

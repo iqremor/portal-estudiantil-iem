@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+plate/
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor directories
+.vscode/
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db
+.sync 
+.fsprobe:user.com.resilio.Sync.test_stream
+
+# images
+*.png
+*.jpg
+*.jpeg
+*.gif

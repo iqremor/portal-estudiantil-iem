@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demostración Interactiva de Prueba - Estilo Glassmorphism</title>
+    <link rel="stylesheet" href="/frontend/styles/inicio.css">
+</head>
+<body>
+    <div class="glass-container">
+        <!-- ... (resto del contenido igual) ... -->
+        <header id="header-placeholder"></header>
+        <main class="page-content">
+            <!-- ... (resto del contenido igual) ... -->
+        </main>
+        <footer id="footer-placeholder"></footer>
+    </div>
+    <script>
+        // Función para cargar contenido HTML
+        async function loadHTML(url, elementId) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.text();
+                const targetElement = document.getElementById(elementId);
+                if (targetElement) {
+                    targetElement.innerHTML = data;
+                }
+            } catch (error) {
+                console.error('Error al cargar HTML:', error);
+                const targetElement = document.getElementById(elementId);
+                if (targetElement) {
+                    targetElement.innerHTML = `<p>Error al cargar ${elementId.replace('-placeholder', '')}.</p>`;
+                }
+            }
+        }
+
+        // Cargar header y footer
+        loadHTML('/frontend/components/header.html', 'header-placeholder');
+        loadHTML('/frontend/components/footer.html', 'footer-placeholder');
+    </script>
+</body>
+</html>

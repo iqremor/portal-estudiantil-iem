@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Acceso Estudiantil - Institución Educativa Mojarras</title>
+  <link rel="stylesheet" href="/frontend/css/styles.css">
+</head>
+<body>
+  <!-- ====================================
+       ELEMENTOS DE ANIMACIÓN DE FONDO
+       ==================================== -->
+  <div class="bg-animation"></div>
+  <div class="floating-element"></div>
+  <div class="floating-element"></div>
+  <div class="floating-element"></div>
+
+  <!-- ====================================
+       CONTENEDOR PRINCIPAL DE LOGIN
+       ==================================== -->
+  <div class="login-container">
+    <div class="logo-section">
+      <div class="logo-container">
+        <div class="logo"></div>
+      </div>
+      <h1 class="institution-name">Institución Educativa Mojarras</h1>
+      <p class="institution-motto">Convivencia y Superación</p>
+    </div>
+
+    <form class="login-form" id="accessForm">
+      <p class="welcome-text">Acceso al Portal Estudiantil</p>
+      <div class="form-group">
+        <label for="studentCode" class="form-label">Ingresa tu Código Estudiantil</label>
+        <input 
+          type="text" 
+          id="studentCode" 
+          name="studentCode" 
+          class="form-input" 
+          placeholder="Código estudiantil" 
+          required maxlength="15" 
+          autocomplete="username"
+        />
+        <span class="input-icon">🎓</span>
+      </div>
+
+      <button type="submit" class="access-button">
+        <span class="loading" id="loadingSpinner"></span>
+        <span id="buttonText">Acceder al Portal</span>
+      </button>
+    </form>
+  </div>
+  <div id="footer-placeholder"></div>
+  <script type="module" src="/frontend/js/script.js"></script>
+     <script>
+        // Función para cargar contenido HTML
+        async function loadHTML(url, elementId) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.text();
+                document.getElementById(elementId).innerHTML = data;
+            } catch (error) {
+                console.error('Error al cargar HTML:', error);
+                document.getElementById(elementId).innerHTML = `<p>Error al cargar ${elementId.replace('-placeholder', '')}.</p>`;
+            }
+        }
+
+        // Cargar footer
+        loadHTML('/frontend/components/footer.html', 'footer-placeholder');
+    </script>
+</body>
+</html>

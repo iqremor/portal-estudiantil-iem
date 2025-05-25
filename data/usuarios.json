@@ -1,0 +1,14 @@
+{
+    "comentario_1": "Datos de usuario para la aplicación web",
+    "usuarios_permitidos": [
+        "IEM1234",
+        "IEM1101"
+    ],
+    "comentario_2": "Puedes agregar aquí información adicional para el frontend o administración",
+    "informacion": {
+        "ultima_actualizacion": "2025-05-25",
+        "total_usuarios": 2,
+        "contacto_soporte": "soporte@institucion.edu.co"
+    },
+    "comentario_3": "Puedes agregar más secciones según necesidades futuras"
+}
