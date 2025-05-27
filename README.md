@@ -180,11 +180,66 @@ git add .
 ```bash
 git commit -m "Versión inicial del portal de acceso estudiantil"
 ```
-5. subir a un repositorio remoto:
+5. Configurar la rama principal:
+```bash
+git branch -M main
+```
+6. revisar el estado del repositorio:
+```bash
+git status
+git remote -v
+```
+7. subir a un repositorio remoto:
 ```bash
 git remote add origin [https://github.com/iqremor/portal-estudiantil-iem.git]
 git push -u origin main
 ```
+8. verificar las ramas del proyecto:
+  a. ramas locales:
+      ```bash
+      git branch -a
+      ``` 
+  b. ramas remotas:
+      ```bash
+      git branch -r
+     ```
+9. verificar el historial de commits:
+  a. rama principal
+    ```bash
+    git log main
+    ```
+  b. rama de desarrollo
+    ```bash 
+    git log develop
+    ```
+10. crear una nueva rama para desarrollo:
+```bash
+git checkout -b develop
+```
+11. subir la rama de desarrollo al repositorio remoto:
+```bash
+git push -u origin develop
+``` 
+12. realizar cambios y hacer commit:
+```bash
+git add .
+git commit -m "Descripción de los cambios realizados"
+```
+13. fusionar cambios de la rama de desarrollo a la rama principal:
+```bash
+git checkout main
+git merge develop
+```
+14. subir los cambios a la rama principal en el repositorio remoto:
+```bash
+git push origin main
+```
+15. eliminar la rama de desarrollo local y remota (opcional):
+```bash
+git branch -d develop
+git push origin --delete develop
+``` 
+
 ## Contribución
 ### Estructura de Commits
 - feat: Nuevas características

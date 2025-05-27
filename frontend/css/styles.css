@@ -1,5 +1,4 @@
-
-        /* ====================================
+/* ====================================
            RESET CSS Y CONFIGURACIÓN GLOBAL
            ==================================== */
         
@@ -14,22 +13,19 @@
            ==================================== */
         
         body {
-            font-family: 'Arial', sans-serif; /* Fuente principal del sitio */
-            height: 100vh; /* Altura completa de la ventana */
-            overflow: hidden; /* Evita el scroll */
-            
-            /* IMAGEN DE FONDO - PERSONALIZABLE */
-            /* INSTRUCCIÓN: Reemplazar la URL con la imagen real del colegio */
-            background: linear-gradient(rgba(45, 90, 61, 0.6), rgba(74, 143, 96, 0.4)), 
-                        url('/frontend/assets/images/fondo.jpg');
-            background-size: cover; /* Cubre toda la pantalla */
-            background-position: center; /* Centra la imagen */
-            background-attachment: fixed; /* Fija la imagen al hacer scroll */
-            
-            /* Configuración de flexbox para centrar contenido */
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            min-height: 100dvh;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(rgba(45, 90, 61, 0.8), rgba(74, 143, 96, 0.6)), url('/frontend/assets/images/fondo.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
             align-items: center;
-            justify-content: center;
             position: relative;
         }
 
@@ -117,26 +113,26 @@
            ==================================== */
         
         .login-container {
-            /* Efecto glassmorphism (vidrio esmerilado) */
-            background: rgba(255, 255, 255, 0.15); /* Fondo blanco translúcido */
-            backdrop-filter: blur(20px); /* Efecto de desenfoque */
-            border: 1px solid rgba(255, 255, 255, 0.2); /* Borde sutil */
-            border-radius: 25px; /* Esquinas redondeadas */
+            /* Efecto glassmorphism */
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: clamp(15px, 4vw, 25px);
             
-            /* Espaciado y dimensiones */
-            padding: 3rem;
-            width: 100%;
-            max-width: 450px; /* Ancho máximo en pantallas grandes */
+            /* Espaciado adaptativo */
+            padding: clamp(1.5rem, 4vw, 3rem);
+            width: min(100%, 450px);
+            margin: 3rem auto 2rem auto;
             
             /* Efectos visuales */
-            box-shadow: 0 25px 50px rgba(45, 90, 61, 0.3); /* Sombra verde */
+            box-shadow: 0 15px 35px rgba(45, 90, 61, 0.3);
             
             /* Posicionamiento */
             position: relative;
-            z-index: 10; /* Por encima de los elementos de fondo */
+            z-index: 10;
             
-            /* Animación de entrada */
-            animation: slideInUp 1s ease-out;
+            /* Animación */
+            animation: slideInUp 0.5s ease-out;
         }
 
         /* Efecto de gradiente adicional en el contenedor */
@@ -378,15 +374,26 @@
            INFORMACIÓN DEL PIE DE PÁGINA
            ==================================== */
         
+        .footer {
+            margin-top: auto;
+            width: 100vw;
+            padding: 2rem 0 1rem 0;
+            background: rgba(45, 90, 61, 0.4);
+            backdrop-filter: blur(8px);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 clamp(1rem, 4vw, 2rem);
+        }
+
         .footer-info {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%); /* Centrado horizontal */
             color: rgba(255, 255, 255, 0.8);
             text-align: center;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             z-index: 5;
+            width: 100%;
         }
 
         /* ====================================
@@ -491,6 +498,40 @@
             }
         }
 
+        @media (max-width: 600px) {
+            .login-container {
+                padding: 1.5rem 0.5rem;
+                max-width: 98vw;
+                margin: 1.5rem 1vw 1.5rem 1vw;
+            }
+            .logo-container {
+                width: 80px;
+                height: 80px;
+            }
+            .logo {
+                width: 65px;
+                height: 65px;
+            }
+            .institution-name {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .login-container {
+                padding: 0.5rem 0.2rem;
+                max-width: 100vw;
+            }
+            .logo-container {
+                width: 60px;
+                height: 60px;
+            }
+            .logo {
+                width: 45px;
+                height: 45px;
+            }
+        }
+
         /* ====================================
            ANIMACIÓN DE CARGA
            ==================================== */
@@ -512,4 +553,3 @@
                 transform: rotate(360deg); 
             }
         }
-    
