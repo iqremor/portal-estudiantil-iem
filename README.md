@@ -180,7 +180,12 @@ git add .
 ```bash
 git commit -m "Versión inicial del portal de acceso estudiantil"
 ```
-
+5. subir a un repositorio remoto:
+```bash
+git remote add origin [https://github.com/iqremor/portal-estudiantil-iem.git]
+git push -u origin main
+```
+## Contribución
 ### Estructura de Commits
 - feat: Nuevas características
 - fix: Correcciones de errores
