@@ -71,12 +71,11 @@ document.getElementById('accessForm').addEventListener('submit', async function(
 
         if (data.permitido) {
             showMessage('Acceso permitido', 'success');
-            // Guardar información del usuario
+            // Guardar información del usuario con nombre completo
             localStorage.setItem('userInfo', JSON.stringify({
-                nombre: cod_estudiante,
+                nombre: data.nombre || cod_estudiante,
                 grado: '11'
             }));
-            
             setTimeout(() => {
                 window.location.href = '/frontend/pages/inicio.html';
             }, 1000);

@@ -28,5 +28,5 @@ export async function validarCodigoEnServidor(cod_estudiante) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cod_estudiante })
     });
-    return await response.json();
+    return await response.json(); // Puede incluir { permitido, mensaje, nombre }
 }

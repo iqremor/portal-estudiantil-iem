@@ -63,10 +63,12 @@ app.post('/api/validar', (req, res) => {
     }
 
     const permitido = usuarios.usuarios_permitidos.includes(cod_estudiante);
+    const nombre = usuarios.nombres && usuarios.nombres[cod_estudiante] ? usuarios.nombres[cod_estudiante] : cod_estudiante;
 
     res.json({ 
         permitido,
-        mensaje: permitido ? 'Código permitido' : 'Código no permitido'
+        mensaje: permitido ? 'Código permitido' : 'Código no permitido',
+        nombre: permitido ? nombre : null
     });
 });
 

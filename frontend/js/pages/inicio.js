@@ -12,15 +12,22 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // Actualizar información en el header
-    document.getElementById('userInitials').textContent = getInitials(userInfo.nombre);
+    // Mostrar nombre completo
     document.getElementById('userName').textContent = userInfo.nombre;
+
+    // Mostrar iniciales (nombre y apellido)
+    function getInitials(nombre) {
+        return nombre.split(' ').map(word => word[0]).join('').toUpperCase();
+    }
+    document.getElementById('userInitials').textContent = getInitials(userInfo.nombre);
+
+    // Actualizar el grado
     document.getElementById('userGrade').textContent = `Grado ${userInfo.grado}`;
 
     // Actualizar el mensaje de bienvenida
     const welcomeMessage = document.querySelector('.welcome-section h2');
     if (welcomeMessage) {
-        welcomeMessage.textContent = `¡Bienvenido ${userInfo.nombre}!`;
+        welcomeMessage.textContent = `¡HOLA! \n ${userInfo.nombre}`;
     }
 
     // Actualizar el subtítulo
@@ -30,19 +37,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Función para obtener las iniciales del nombre
-function getInitials(name) {
-    return name
-        .split(' ')
-        .map(word => word[0])
-        .join('')
-        .toUpperCase();
-}
-
 // ====================================
 // MANEJO DEL CIERRE DE SESIÓN
 // ====================================
-function logout() {
+window.logout = function() {
     if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
         // Limpiar la información del usuario
         localStorage.removeItem('userInfo');
@@ -51,4 +49,4 @@ function logout() {
         // Redirigir al login
         window.location.href = '/';
     }
-}
+};

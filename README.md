@@ -266,3 +266,44 @@ git push origin --delete develop
 4. Merge a develop
 5. Pruebas finales
 6. Merge a main para producción
+
+## Versión de Cambios
+
+### Flujo Actual del Proyecto (2025-05-26)
+
+1. **Acceso y Autenticación**
+   - El usuario accede a la página principal (`index.html`) e ingresa su código estudiantil (formato: IEM####).
+   - El frontend valida el formato antes de enviar la petición al backend.
+   - Si el formato es válido, se envía una petición POST a `/api/validar`.
+
+2. **Validación en el Backend**
+   - El backend (`plate_server.js`) verifica el código en `usuarios_permitidos` de `data/usuarios.json`.
+   - Si el código es válido, responde con `{ permitido: true, mensaje: "Código permitido", nombre: "Nombre Completo" }`.
+   - Si no es válido, responde con `{ permitido: false, mensaje: "Código no permitido", nombre: null }`.
+
+3. **Manejo de la Respuesta en el Frontend**
+   - Si el acceso es permitido, el frontend guarda en `localStorage` el nombre completo y el grado del usuario.
+   - Se muestra un mensaje de éxito y se redirige automáticamente a la página de inicio (`frontend/pages/inicio.html`).
+   - Si el acceso no es permitido, se muestra un mensaje de error y el usuario permanece en la página de login.
+
+4. **Página de Inicio Personalizada**
+   - Al cargar la página de inicio, el script lee el nombre completo y el grado desde `localStorage`.
+   - Se muestran el nombre completo y las iniciales del usuario en el header.
+   - También se personaliza el mensaje de bienvenida y el subtítulo con el nombre y grado.
+
+5. **Cierre de Sesión**
+   - El usuario puede cerrar sesión con el botón correspondiente.
+   - Al cerrar sesión, se eliminan los datos del usuario de `localStorage` y se redirige al login.
+
+6. **Estructura de Datos Mejorada**
+   - El archivo `usuarios.json` ahora contiene un objeto `nombres` que asocia cada código a un nombre completo.
+   - Esto permite mostrar el nombre real del usuario tras la autenticación.
+
+7. **Estilos y Responsividad**
+   - El diseño es responsivo y moderno, adaptándose a cualquier dispositivo.
+   - El footer siempre es visible y el contenido principal está centrado.
+
+8. **Control de Versiones**
+   - El proyecto utiliza Git, con instrucciones claras para ramas, commits y trabajo colaborativo.
+
+---
