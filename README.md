@@ -1,22 +1,61 @@
-# Simulacro_web
+# Portal de Evaluación Académica IEM
 
-aplicación web interactiva similar a un sistema de pruebas académicas en WSL (Windows Subsystem for Linux). La aplicación debe permitir a los usuarios realizar evaluaciones en diferentes áreas de conocimiento (matemáticas, ciencias naturales, ciencias sociales, análisis de imagen y comprensión de textos).
-El sistema debe incluir:
+## Descripción
+Sistema web interactivo para evaluaciones académicas que permite a los estudiantes realizar pruebas en diferentes áreas del conocimiento. Desarrollado específicamente para la Institución Educativa Municipal (IEM).
 
-# 1. Una página de inicio con autenticación donde los usuarios ingresen su número de identificación
-# 2. Una interfaz principal que muestre las diferentes categorías de preguntas disponibles
-# 3. Secciones específicas para cada tipo de prueba con temporizador incorporado
-Un sistema de puntuación que calcule resultados estandarizados (con media y desviación estándar definidas)
-Almacenamiento de las interacciones y resultados del usuario en un backend
+## Características Principales
+- 🔐 Sistema de autenticación por código estudiantil
+- 📚 Evaluaciones en múltiples áreas:
+  - Matemáticas
+  - Ciencias Naturales
+  - Ciencias Sociales
+  - Análisis de Imagen
+  - Comprensión de Textos
+- ⏱️ Temporizador incorporado en las pruebas
+- 📊 Sistema de puntuación estandarizado
+- 💾 Almacenamiento de resultados
+- 📱 Diseño responsive
 
-La aplicación debe ser responsive y funcionar en los navegadores más comunes. Por favor, explica paso a paso:
+## Requisitos Previos
+- Node.js >= 14.x
+- Python >= 3.12
+- Navegador web moderno (Chrome, Firefox, Safari, Edge)
 
-Cómo configurar el entorno de desarrollo en WSL
-Qué tecnologías de frontend y backend serían más apropiadas
-Cómo estructurar la base de datos para almacenar preguntas, respuestas y resultados de usuarios
-Cómo implementar la autenticación de usuarios
-Cómo desarrollar el sistema de puntuación y estadísticas
-Cómo desplegar la aplicación en un servidor
+## Instalación
+
+1. Clonar el repositorio:
+```bash
+git clone [URL_del_repositorio]
+cd plat_web
+```
+
+2. Instalar dependencias del servidor:
+```bash
+npm install
+```
+
+3. Configurar el entorno virtual de Python:
+```bash
+python -m venv plate
+source plate/bin/activate  # En Linux/Mac
+pip install -r requirements.txt
+```
+
+4. Configurar la base de datos:
+```bash
+# Asegurarse que el archivo usuarios.json existe en la carpeta data/
+```
+
+## Uso
+1. Iniciar el servidor:
+```bash
+node plate_server.js
+```
+
+2. Acceder a la aplicación:
+- Abrir el navegador
+- Visitar `http://localhost:8000`
+- Ingresar con el código estudiantil (formato: IEMdddd)
 
 # Portal de Acceso Estudiantil - IEM
 

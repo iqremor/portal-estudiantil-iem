@@ -7,7 +7,14 @@
 // =====================
 // Valida que el código empiece por IEM y tenga 4 números
 export function validarFormatoCodigo(cod_estudiante) {
-    return /^IEM\d{4}$/.test(cod_estudiante);
+    // Verificar que el código existe y no está vacío
+    if (!cod_estudiante || typeof cod_estudiante !== 'string') {
+        return false;
+    }
+    // Convertir a mayúsculas y eliminar espacios
+    const codigo = cod_estudiante.trim().toUpperCase();
+    // Validar el formato: IEM seguido de exactamente 4 números
+    return /^IEM\d{4}$/.test(codigo);
 }
 
 

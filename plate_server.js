@@ -39,14 +39,16 @@ try {
 
 // Ruta para validar nombre
 app.post('/api/validar', (req, res) => {
-    let cod_estudiante = req.body.cod_estudiante?.trim().toUpperCase();
-
-    if (!/^IEM\d{4}$/.test(cod_estudiante)) {
-        return res.json({ permitido: false, mensaje: 'Formato de código inválido' });
+    // Verificar si se recibió el código estudiantil
+    if (!req.body.cod_estudiante) {
+        return res.json({ permitido: false, mensaje: 'Código requerido' });
     }
 
-    if (!cod_estudiante) {
-        return res.json({ permitido: false, mensaje: 'Código requerido' });
+    let cod_estudiante = req.body.cod_estudiante.trim().toUpperCase();
+
+    // Validar el formato del código
+    if (!/^IEM\d{4}$/.test(cod_estudiante)) {
+        return res.json({ permitido: false, mensaje: 'El código debe comenzar con IEM seguido de 4 números' });
     }
 
     // Recargar usuarios desde usuarios.json para asegurar datos actualizados

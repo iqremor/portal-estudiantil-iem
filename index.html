@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Acceso Estudiantil - Institución Educativa Mojarras</title>
+
+  <!--=================================
+      HOJAS DE ESTILO
+  ==================================-->
   <link rel="stylesheet" href="/frontend/css/styles.css">
 </head>
 <body>
@@ -30,14 +34,18 @@
     <form class="login-form" id="accessForm">
       <p class="welcome-text">Acceso al Portal Estudiantil</p>
       <div class="form-group">
-        <label for="studentCode" class="form-label">Ingresa tu Código Estudiantil</label>
+        <label for="cod_estudiante" class="form-label">Ingresa tu Código Estudiantil</label>
         <input 
           type="text" 
-          id="studentCode" 
-          name="studentCode" 
+          id="cod_estudiante" 
+          name="cod_estudiante" 
           class="form-input" 
-          placeholder="Código estudiantil" 
-          required maxlength="15" 
+          placeholder="Ejemplo: IEM1234" 
+          required 
+          maxlength="7" 
+          pattern="IEM[0-9]{4}"
+          style="text-transform: uppercase;"
+          oninput="this.value = this.value.toUpperCase()"
           autocomplete="username"
         />
         <span class="input-icon">🎓</span>
@@ -49,26 +57,14 @@
       </button>
     </form>
   </div>
-  <div id="footer-placeholder"></div>
-  <script type="module" src="/frontend/js/script.js"></script>
-     <script>
-        // Función para cargar contenido HTML
-        async function loadHTML(url, elementId) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.text();
-                document.getElementById(elementId).innerHTML = data;
-            } catch (error) {
-                console.error('Error al cargar HTML:', error);
-                document.getElementById(elementId).innerHTML = `<p>Error al cargar ${elementId.replace('-placeholder', '')}.</p>`;
-            }
-        }
-
-        // Cargar footer
-        loadHTML('/frontend/components/footer.html', 'footer-placeholder');
-    </script>
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-info">
+        <p>&copy; 2025 Institución Educativa Mojarras</p>
+        <p>Convivencia y Superación</p>
+      </div>
+    </div>
+  </footer>
+   <script type="module" src="/frontend/js/script.js"></script>
 </body>
 </html>

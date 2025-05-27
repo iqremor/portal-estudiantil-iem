@@ -50,22 +50,33 @@ function showMessage(message, type = 'info') {
 document.getElementById('accessForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    const cod_estudiante = document.getElementById('studentCode').value.trim().toUpperCase();
-
+    const cod_estudiante = document.getElementById('cod_estudiante').value.trim();
+    
     // Mostrar el spinner de carga
-    document.getElementById('loadingSpinner').style.display = 'inline-block';
-    document.getElementById('buttonText').style.opacity = '0';
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const buttonText = document.getElementById('buttonText');
+    
+    loadingSpinner.style.display = 'inline-block';
+    buttonText.style.opacity = '0';
 
     try {
+        // Validar formato
         if (!validarFormatoCodigo(cod_estudiante)) {
-            showMessage('El código estudiantil debe empezar por IEM y tener 4 números', 'error');
+            showMessage('El código debe comenzar con IEM seguido de 4 números (Ejemplo: IEM1234)', 'error');
             return;
         }
 
+        // Validar con el servidor
         const data = await validarCodigoEnServidor(cod_estudiante);
 
         if (data.permitido) {
             showMessage('Acceso permitido', 'success');
+            // Guardar información del usuario
+            localStorage.setItem('userInfo', JSON.stringify({
+                nombre: cod_estudiante,
+                grado: '11'
+            }));
+            
             setTimeout(() => {
                 window.location.href = '/frontend/pages/inicio.html';
             }, 1000);
@@ -73,12 +84,29 @@ document.getElementById('accessForm').addEventListener('submit', async function(
             showMessage(data.mensaje || 'Código no permitido', 'error');
         }
     } catch (error) {
+        console.error('Error:', error);
         showMessage('Error al validar el código', 'error');
     } finally {
-        // Ocultar el spinner de carga
-        document.getElementById('loadingSpinner').style.display = 'none';
-        document.getElementById('buttonText').style.opacity = '1';
+        loadingSpinner.style.display = 'none';
+        buttonText.style.opacity = '1';
     }
+});
+
+// ====================================
+// INICIALIZACIÓN
+// ====================================
+window.addEventListener('load', function() {
+    const input = document.getElementById('cod_estudiante');
+    
+    // Forzar mayúsculas al pegar texto
+    input.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text');
+        this.value = text.toUpperCase();
+    });
+    
+    // Enfocar el input al cargar
+    input.focus();
 });
 
 // ====================================

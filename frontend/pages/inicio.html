@@ -1,45 +1,114 @@
 <!DOCTYPE html>
 <html lang="es">
+<!--=================================
+    META INFORMACIÓN
+==================================-->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demostración Interactiva de Prueba - Estilo Glassmorphism</title>
-    <link rel="stylesheet" href="/frontend/styles/inicio.css">
-</head>
-<body>
-    <div class="glass-container">
-        <!-- ... (resto del contenido igual) ... -->
-        <header id="header-placeholder"></header>
-        <main class="page-content">
-            <!-- ... (resto del contenido igual) ... -->
-        </main>
-        <footer id="footer-placeholder"></footer>
-    </div>
-    <script>
-        // Función para cargar contenido HTML
-        async function loadHTML(url, elementId) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.text();
-                const targetElement = document.getElementById(elementId);
-                if (targetElement) {
-                    targetElement.innerHTML = data;
-                }
-            } catch (error) {
-                console.error('Error al cargar HTML:', error);
-                const targetElement = document.getElementById(elementId);
-                if (targetElement) {
-                    targetElement.innerHTML = `<p>Error al cargar ${elementId.replace('-placeholder', '')}.</p>`;
-                }
-            }
-        }
+    <meta name="description" content="Portal Estudiantil de la Institución Educativa Mojarras">
+    <title>Portal Estudiantil - Institución Educativa Mojarras</title>
 
-        // Cargar header y footer
-        loadHTML('/frontend/components/header.html', 'header-placeholder');
-        loadHTML('/frontend/components/footer.html', 'footer-placeholder');
-    </script>
+    <!--=================================
+        HOJAS DE ESTILO
+    ==================================-->
+    <link rel="stylesheet" href="/frontend/css/styles.css">
+    <link rel="stylesheet" href="/frontend/css/pages/style_pages.css">
+</head>
+
+<!--=================================
+    CUERPO DE LA PÁGINA
+==================================-->
+<body class="page-body">
+    <!--=================================
+        ELEMENTOS DE ANIMACIÓN
+    ==================================-->
+    <div class="bg-animation"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">
+                        <img src="/frontend/assets/images/escudo_nuevo.png" alt="Logo IEM">
+                    </div>
+                    <div class="institution-info">
+                        <h1>Institución Educativa Mojarras</h1>
+                        <p>Convivencia y Superación</p>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <span id="userInitials">US</span>
+                        </div>
+                        <div class="user-details">
+                            <h3 id="userName">Estudiante</h3>
+                            <p id="userGrade">Grado</p>
+                        </div>
+                    </div>
+                    <button onclick="logout()" class="btn btn-logout">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                        </svg>
+                        Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <div class="main-container">
+        <div class="content-section">
+            <div class="welcome-section">
+                <h2>Bienvenido al Portal Estudiantil</h2>
+                <p>Aquí podrás acceder a todas tus actividades académicas</p>
+            </div>
+        
+            <div class="categories-section">
+                <h3>Categorías de Pruebas</h3>
+                <div class="category-grid">
+                    <div class="category-card">
+                        <h4>Matemáticas</h4>
+                        <p>Pruebas de razonamiento matemático</p>
+                        <a href="#" class="btn btn-secondary">Comenzar</a>
+                    </div>
+                    <div class="category-card">
+                        <h4>Ciencias Naturales</h4>
+                        <p>Experimentos y teorías científicas</p>
+                        <a href="#" class="btn btn-secondary">Comenzar</a>
+                    </div>
+                    <div class="category-card">
+                        <h4>Ciencias Sociales</h4>
+                        <p>Historia y geografía</p>
+                        <a href="#" class="btn btn-secondary">Comenzar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--=================================
+        FOOTER
+    ==================================-->
+    <footer class="footer">
+    <div class="footer-content">
+        <div class="footer-info">
+            <p>&copy; 2025 Institución Educativa Mojarras</p>
+            <p>Convivencia y Superación</p>
+        </div>
+    </div>
+</footer>
+
+    <!--=================================
+        SCRIPTS
+    ==================================-->
+    <!-- Script principal de la página -->
+    <script type="module" src="/frontend/js/pages/inicio.js"></script>
 </body>
 </html>
