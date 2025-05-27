@@ -221,6 +221,11 @@ git push -u origin main
   ```bash
   git push -u origin feature/mi-nueva-caracteristica
   ```
+  c. cambio entre ramas:
+  ```bash
+  git switch main # para cambiar a la rama principal 
+  git switch develop # para cambiar a la rama de desarrollo
+  ```
 11. subir la rama de desarrollo al repositorio remoto:
 ```bash
 git push -u origin develop

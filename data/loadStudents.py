@@ -11,7 +11,7 @@ from pathlib import Path
 
 # Rutas de archivos
 SCRIPT_DIR = Path(__file__).parent
-CSV_FILE_PATH = SCRIPT_DIR / '../data/PRECIFES.csv'  # Cambiado a PREICFES.csv
+CSV_FILE_PATH = SCRIPT_DIR / '../data/preicfes.csv'  # Cambiado a preicfes.csv
 JSON_FILE_PATH = SCRIPT_DIR / '../data/usuarios.json'
 
 def load_existing_json():
