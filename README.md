@@ -196,13 +196,13 @@ git push -u origin main
 ```
 8. verificar las ramas del proyecto:
   a. ramas locales:
-      ```bash
-      git branch -a
-      ``` 
+    ```bash
+    git branch -a
+    ``` 
   b. ramas remotas:
-      ```bash
-      git branch -r
-     ```
+    ```bash
+    git branch -r
+    ```
 9. verificar el historial de commits:
   a. rama principal
     ```bash
@@ -213,9 +213,14 @@ git push -u origin main
     git log develop
     ```
 10. crear una nueva rama para desarrollo:
-```bash
-git checkout -b develop
-```
+  a. creación de la rama de desarrollo local: 
+  ```bash
+  git checkout -b develop
+  ```
+  b. creación de la rama de desarrollo remota:
+  ```bash
+  git push -u origin feature/mi-nueva-caracteristica
+  ```
 11. subir la rama de desarrollo al repositorio remoto:
 ```bash
 git push -u origin develop
