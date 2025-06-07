@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<!--=================================
+    META INFORMACIÓN
+==================================-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulacro Interactivo - IEM</title>
+    <!--=================================
+        HOJAS DE ESTILO
+    ==================================-->
+    <link rel="stylesheet" href="/frontend/assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="/frontend/assets/fonts/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="/frontend/css/pages/simulacro.css">
+    <link rel="stylesheet" href="/frontend/css/pages/style_pages.css">
+</head>
+<body class="page-body">
+    <!--=================================
+        HEADER
+    ==================================-->
+    <div id="header-container" data-component="/frontend/components/header.html"></div>
+
+    <!-- Animaciones de fondo (componente) -->
+    <div id="background-animation-container" data-component="/frontend/components/background-animation.html"></div>
+
+    <!-- Contenido Principal -->
+    <main class="dashboard-container" style="font-size: clamp(0.95rem, 2vw, 1.1rem);">
+        <div class="top-section-simulacro">
+            <h2 class="exercise-title">Simulacro Interactivo</h2>
+        </div>
+        <nav class="top-navigation">
+            <button onclick="volverAlInicio()" class="back-to-home-button">
+                <i class="fas fa-arrow-left"></i> Volver al inicio
+            </button>
+        </nav>
+        <section class="welcome-section">
+            <div class="welcome-text-section">
+                <p>A continuación encontrarás los ejemplos de las preguntas que conforman los componentes de la prueba de
+                    ingreso.</p>
+                <p>Para comenzar, haz clic sobre uno de los grupos de preguntas que conforman la prueba. Para responder cada
+                    grupo se ha asignado un tiempo limite de respuesta, que será controlado con ayuda de un reloj. El tiempo
+                    total para responder todos los grupos es de 210 minutos.</p>
+            </div>
+        </section>
+
+        <div class="dashboard-content">
+            <section class="groups-section">
+                <h3>Grupos</h3>
+                <div class="button-grid">
+                    <button class="dashboard-button" data-group="tematica">
+                        <i class="fas fa-book"></i>
+                        <span>Temática Común</span>
+                    </button>
+                    <button class="dashboard-button" data-group="matematicas">
+                        <i class="fas fa-calculator"></i>
+                        <span>Matemáticas</span>
+                    </button>
+                    <button class="dashboard-button" data-group="sociales">
+                        <i class="fas fa-globe-americas"></i>
+                        <span>Ciencias Sociales</span>
+                    </button>
+                    <button class="dashboard-button" data-group="naturales">
+                        <i class="fas fa-flask"></i>
+                        <span>Ciencias Naturales</span>
+                    </button>
+                    <button class="dashboard-button" data-group="imagen">
+                        <i class="fas fa-image"></i>
+                        <span>Análisis de Imagen</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="scores-section">
+                <h3>Puntaje estándar por componente</h3>
+                <p class="score-explanation">Estos puntajes están dados con una media de 10 y una desviación estándar de
+                    1.</p>
+                <div class="score-grid">
+                    <div class="score-item" data-subject="matematicas">
+                        <div class="score-info">
+                            <i class="fas fa-calculator"></i>
+                            <p>Matemáticas</p>
+                        </div>
+                        <span class="score-value">0.0</span>
+                    </div>
+                    <div class="score-item" data-subject="naturales">
+                        <div class="score-info">
+                            <i class="fas fa-flask"></i>
+                            <p>Ciencias Naturales</p>
+                        </div>
+                        <span class="score-value">0.0</span>
+                    </div>
+                    <div class="score-item" data-subject="sociales">
+                        <div class="score-info">
+                            <i class="fas fa-globe-americas"></i>
+                            <p>Ciencias Sociales</p>
+                        </div>
+                        <span class="score-value">0.0</span>
+                    </div>
+                    <div class="score-item" data-subject="imagen">
+                        <div class="score-info">
+                            <i class="fas fa-image"></i>
+                            <p>Análisis de Imagen</p>
+                        </div>
+                        <span class="score-value">0.0</span>
+                    </div>
+                    <div class="score-item" data-subject="comprension">
+                        <div class="score-info">
+                            <i class="fas fa-book-reader"></i>
+                            <p>Comprensión de Textos</p>
+                        </div>
+                        <span class="score-value">0.0</span>
+                    </div>
+                </div>
+                <div class="save-session-button-container">
+                    <button class="dashboard-button save-button">
+                        <i class="fas fa-save"></i>
+                        <span>Guardar sesión</span>
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!--=================================
+        FOOTER
+    ==================================-->
+    <div id="footer-container" data-component="/frontend/components/footer.html"></div>
+    <!--=================================
+        SCRIPTS
+    ==================================-->
+    <script type="module" src="/frontend/js/shared/components.js" defer></script>
+    <script type="module" src="/frontend/js/shared/navigation.js" defer></script>
+    <script type="module" src="/frontend/js/pages/inicio.js" defer></script>
+</body>
+</html>

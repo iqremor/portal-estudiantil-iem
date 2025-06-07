@@ -1,20 +1,119 @@
 /* ====================================
-   ESTILOS PARA LA PÁGINA DE INICIO
-   ==================================== */
-
+           RESET CSS Y CONFIGURACIÓN GLOBAL
+           ==================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Incluye padding y border en el ancho total */
+}
 /* ====================================
    CONFIGURACIÓN DEL CUERPO PRINCIPAL
    ==================================== */
 .page-body {
+    font-family: 'Arial', sans-serif;
     min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(rgba(45, 90, 61, 0.8), rgba(74, 143, 96, 0.6)), url('/frontend/assets/images/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     display: flex;
     flex-direction: column;
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-attachment: fixed;
-    overflow-x: hidden;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+}
+/* ====================================
+   ELEMENTOS DE ANIMACIÓN DE FONDO
+   ==================================== */
+/* Botones secundarios*/
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor principal de animaciones de fondo */
+.bg-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1; /* Capa detrás del contenido principal */
+}
+
+/* Efecto de rotación dorada en el fondo */
+.bg-animation::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite; /* Rotación continua de 20 segundos */
+}
+
+/* Elemento flotante grande en la esquina superior derecha */
+.bg-animation::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    right: 10%;
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(45deg, rgba(74, 143, 96, 0.2), rgba(45, 90, 61, 0.1));
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite; /* Movimiento flotante de 6 segundos */
+}
+
+/* ====================================
+   ELEMENTOS FLOTANTES DECORATIVOS
+   ==================================== */
+
+/* Clase base para elementos flotantes pequeños */
+.floating-element {
+    position: absolute;
+    border-radius: 50%; /* Forma circular */
+    background: rgba(255, 215, 0, 0.1); /* Color dorado translúcido */
+    animation: floatUpDown 4s ease-in-out infinite; /* Animación vertical */
+}
+
+/* Elemento flotante 1 - Esquina superior izquierda */
+.floating-element:nth-child(1) {
+    width: 80px;
+    height: 80px;
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s; /* Sin retraso */
+}
+
+/* Elemento flotante 2 - Área inferior derecha */
+.floating-element:nth-child(2) {
+    width: 60px;
+    height: 60px;
+    top: 60%;
+    left: 80%;
+    animation-delay: 2s; /* Retraso de 2 segundos */
+}
+
+/* Elemento flotante 3 - Área inferior izquierda */
+.floating-element:nth-child(3) {
+    width: 40px;
+    height: 40px;
+    top: 80%;
+    left: 20%;
+    animation-delay: 4s; /* Retraso de 4 segundos */
 }
 
 /* Layout principal */
@@ -36,12 +135,15 @@
     min-height: 0;
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(8px);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin: 1rem auto;
+    border-radius: 0 0 12px 12px;
+    padding: 1rem;
+    margin: 0 auto;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     z-index: 10;
     transition: all 0.3s ease;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .main-container:hover {
@@ -137,7 +239,7 @@
 }
 
 /* ====================================
-   HEADER MINIMALISTA
+   HEADER 
    ==================================== */
 .header {
     background: rgba(45, 90, 61, 0.95);
@@ -149,12 +251,11 @@
     transition: all 0.3s ease;
     padding: 0.5rem 0;
 }
-
-.header-content {
+.header-content { /* wrapper para el contenido del header */
     display: flex;
     justify-content: space-between;
     align-items: stretch;
-    padding: 0rem 1.5rem;
+    padding: 0 1.5rem;
     gap: 1rem;
     max-width: 1600px;
     margin: 0 auto;
@@ -162,64 +263,72 @@
     position: relative;
     height: 100px;
 }
-
+/* ===================================
+  SECCIÓN IZQUIERDA - LOGO
+=================================== */
 .logo-section {
     display: flex;
-    align-items: flex-end;
-    gap: 1.5rem;
-    width: 20%;
+    width: 100%;
     height: 100%;
-    padding-bottom: 0; /* Aumenta el espacio inferior para mover el logo hacia abajo */
+    position: relative;
+    left: 3%; /* Move right */
+    right:10%; /* Move left */
 }
 
 .logo {
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: normal;
 }
-
 .logo img {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
-
+.logo:hover {
+    transform: scale(1);
+}
+/* ===================================
+  SECCIÓN CENTRAL - NOMBRE Y FRASE
+  =================================== */
 .institution-info {
-    position: absolute;
-    left: 50%;
-    top: 50%;
+    position:  relative;
+    left: 20%;
+    top: 70%;
     transform: translate(-50%, -50%);
     text-align: center;
     width: auto;
-    padding: 0 1rem;
+    padding: 0 .5rem;
 }
 
-.institution-info h1 {
-    font-size: 2rem;
+.institution-title {
+    font-size: 1.6rem;
     color: white;
     margin: 0 0 0.3rem 0;
     white-space: nowrap;
     font-weight: bold;
-    letter-spacing: 0.5px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5rem;
+    text-shadow: 1rem 1rem 3rem rgba(0, 0, 0, 0.2);
 }
 
-.institution-info p {
-    font-size: 1.4rem;
+.institution-subtitle {
+    font-size: 1rem;
     color: rgba(255, 255, 255, 0.9);
     margin: 0;
     white-space: nowrap;
-    letter-spacing: 0.3px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.3rem;
+    text-shadow: 1rem 1rem 2rem rgba(0, 0, 0, 0.2);
 }
-
+/* ===================================
+      SECCIÓN DERECHA - USUARIO
+ =================================== */
 .user-actions {
     display: flex;
     align-items: center;
@@ -231,11 +340,13 @@
 .user-info {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.5rem;
     color: white;
-    margin-right: 1rem;
+    margin-right: .5rem;
 }
-
+.user-info:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
 .user-avatar {
     width: 45px;
     height: 45px;
@@ -251,23 +362,16 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.user-details {
-    padding-right: 0.5rem;
-}
-
-.user-details h3 {
+.user-name {
     font-size: 1.1rem;
     font-weight: 600;
     margin: 0;
     color: white;
     white-space: nowrap;
 }
-
-.user-details p {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.9);
+.user-details {
+    padding-right: 0.5rem;
 }
-
 /* Botones */
 .btn {
     padding: 0.8rem 1.5rem;
@@ -285,38 +389,29 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-}
-
-.btn-logout {
+.logout-btn {
     background: rgba(255, 255, 255, 0.1);
     color: white;
-    padding: 0.8rem 1.5rem;
-    font-size: 1.1rem;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    height: 45px;
+    padding: 0.6rem 1.2rem; /* Ajustado para mejor proporción con el ícono */
+    font-size: 0.9rem; /* Ajustado para el texto "Cerrar Sesión" */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Borde más sutil */
+    border-radius: 25px; /* Consistente con user-info */
+    height: auto; /* Permitir que la altura se ajuste al contenido */
+    min-height: 40px; /* Altura mínima similar al avatar */
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.5rem; /* Reducido para mejor ajuste del texto e ícono */
+    transition: all 0.3s ease; /* Transición suave para todos los cambios */
+    cursor: pointer;
 }
 
-.btn-logout svg {
+.logout-btn svg {
     width: 50px;
     height: 40px;
     margin-right: 6px;
 }
 
-.btn-logout:hover {
+.logout-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-2px);
@@ -324,13 +419,16 @@
 }
 
 /* ====================================
-   FOOTER MINIMALISTA
+   FOOTER
    ==================================== */
 footer {
     margin-top: auto;
     padding: 1rem 0;
     background: rgba(45, 90, 61, 0.4);
     backdrop-filter: blur(8px);
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 0 0 15px 15px;
 }
 
 .footer-content {
@@ -391,10 +489,17 @@ footer {
     }
 }
 
+@media (max-width: 1200px) {
+    .header, .main-container {
+        width: calc(100% - 2rem);
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
+
 @media (max-width: 768px) {
-    .header {
-        position: sticky;
-        top: 0;
+    .header, .main-container {
+        width: calc(100% - 1rem);
     }
 
     .header-content {
@@ -458,6 +563,12 @@ footer {
 }
 
 @media (max-width: 480px) {
+    .header, .main-container {
+        width: 100%;
+        margin: 0 auto;
+        border-radius: 0;
+    }
+
     .header-content {
         justify-content: center;
         text-align: center;

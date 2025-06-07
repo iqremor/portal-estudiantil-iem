@@ -66,7 +66,7 @@ node plate_server.js
 **Frontend:**
 - `index.html`: Página principal con el formulario de acceso
 - `frontend/js/validacion.js`: Funciones de validación del código estudiantil
-- `frontend/js/script.js`: Manejo del formulario y mensajes de UI
+- `frontend/js/index.js`: Manejo del formulario y mensajes de UI
 - `frontend/css/styles.css`: Estilos de la aplicación
 - `frontend/pages/inicio.html`: Página a la que se redirige tras acceso exitoso
 
@@ -83,7 +83,7 @@ Usuario ingresa código en index.html
 Formato: IEMdddd (ejemplo: IEM1234)
 ```
 
-### 2. Validación Frontend (script.js + validacion.js)
+### 2. Validación Frontend (index.js + validacion.js)
 ```
 Validación de formato
 ↓
@@ -114,7 +114,7 @@ Si no permitido:
 ## Interacción de Componentes
 
 ```
-[index.html] ← → [script.js + validacion.js]
+[index.html] ← → [index.js + validacion.js]
       ↑               ↓
       └───── API ─────┘
               ↓

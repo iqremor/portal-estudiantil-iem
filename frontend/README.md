@@ -16,7 +16,7 @@ login-app/
    │       ├── profile.css
    │       └── auth.css           # Estilos para login/register
    ├── js/
-   │   ├── script.js              # JavaScript global
+   │   ├── index.js              # JavaScript global
    │   └── pages/                 # 📁 SCRIPTS ESPECÍFICOS
    │       ├── dashboard.js
    │       ├── profile.js
